@@ -1,7 +1,4 @@
 
-// MFC_App_Registration_in_a_Medical_ClinicDlg.h : header file
-//
-
 #pragma once
 
 #include "sqlite3.h"
@@ -12,7 +9,7 @@ class CMFCAppRegistrationinaMedicalClinicDlg : public CDialogEx
 {
 // Construction
 public:
-	CMFCAppRegistrationinaMedicalClinicDlg(CWnd* pParent = nullptr);	// standard constructor
+	CMFCAppRegistrationinaMedicalClinicDlg(CWnd* pParent = nullptr);
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -41,8 +38,6 @@ public:
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedButton3();
 	
-	void OnLvnItemchangeLIST1(NMHDR* pNMHDR, LRESULT* pResult);
-
 private:
 	BOOL InitializeDatabase(sqlite3*& db);
 	void LoadDataFromDatabase(sqlite3* db, CListCtrl& listCtrl);
@@ -56,7 +51,6 @@ private:
 	void createrVisitsTableHeader();
 	void createrDoctorsTableHeader();
 	void createrPatientsTableHeader();
-
 
 	CListCtrl m_listCtrl;
 
@@ -74,7 +68,6 @@ private:
 	void OpenAddPatientDialog();
 
 public:
-	afx_msg void OnBnClickedCancel();
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedButton4();
 };
