@@ -189,6 +189,9 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CAddDoctorDlg.h" />
+    <ClInclude Include="CAddPatientDlg.h" />
+    <ClInclude Include="CMyDialog.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MFC_App_Registration_in_a_Medical_Clinic.h" />
     <ClInclude Include="MFC_App_Registration_in_a_Medical_ClinicDlg.h" />
@@ -197,6 +200,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CAddDoctorDlg.cpp" />
+    <ClCompile Include="CAddPatientDlg.cpp" />
+    <ClCompile Include="CMyDialog.cpp" />
     <ClCompile Include="MFC_App_Registration_in_a_Medical_Clinic.cpp" />
     <ClCompile Include="MFC_App_Registration_in_a_Medical_ClinicDlg.cpp" />
     <ClCompile Include="pch.cpp">

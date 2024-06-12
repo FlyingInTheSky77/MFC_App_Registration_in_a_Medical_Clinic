@@ -10,6 +10,10 @@
 
 #include <string>
 
+#include "CAddDoctorDlg.h"
+#include "CMyDialog.h"
+#include "CAddPatientDlg.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -24,7 +28,8 @@ public:
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_ABOUTBOX };
+	//enum { IDD = IDD_ABOUTBOX };
+	enum { IDD = IDD_MFC_APP_REGISTRATION_IN_A_MEDICAL_CLINIC_DIALOG};
 #endif
 
 	protected:
@@ -33,6 +38,9 @@ public:
 // Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	//afx_msg void OnBnClickedButton4();
+	//afx_msg void OnBnClickedButton5();
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
@@ -45,6 +53,8 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+	//ON_BN_CLICKED(IDC_BUTTON4, &CAboutDlg::OnBnClickedButton4)
+	//ON_BN_CLICKED(IDC_BUTTON5, &CAboutDlg::OnBnClickedButton5)
 END_MESSAGE_MAP()
 
 
@@ -59,35 +69,23 @@ CMFCAppRegistrationinaMedicalClinicDlg::CMFCAppRegistrationinaMedicalClinicDlg(C
 void CMFCAppRegistrationinaMedicalClinicDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	//DDX_Control(pDX, IDC_VISITS_LIST, m_listCtrl);
 }
 
 BEGIN_MESSAGE_MAP(CMFCAppRegistrationinaMedicalClinicDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST1, &CMFCAppRegistrationinaMedicalClinicDlg::OnLvnItemchangeLIST1)
 	ON_BN_CLICKED(IDC_BUTTON1, &CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedButton3)
-	ON_BN_CLICKED(IDCANCEL, &CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedCancel)
 	ON_BN_CLICKED(IDOK, &CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedOk)
 	ON_BN_CLICKED(IDC_BUTTON4, &CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedButton4)
 END_MESSAGE_MAP()
 
-void CMFCAppRegistrationinaMedicalClinicDlg::OnLvnItemchangeLIST1(NMHDR* pNMHDR, LRESULT* pResult)
-{
-	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
-	// Your code for handling list item change
-	*pResult = 0;
-}
-
-// CMFCAppRegistrationinaMedicalClinicDlg message handlers
-
 BOOL CMFCAppRegistrationinaMedicalClinicDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
-
-	// Add "About..." menu item to system menu.
 
 	// IDM_ABOUTBOX must be in the system command range.
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
@@ -121,12 +119,7 @@ BOOL CMFCAppRegistrationinaMedicalClinicDlg::OnInitDialog()
 	// Closing a database connection
 	sqlite3_close(db);
 
-	return TRUE;  // return TRUE  unless you set the focus to a control
-}
-
-void checkTableIfExistAndCreateIfNot(const char* table)
-{
-
+	return TRUE;
 }
 
 BOOL CMFCAppRegistrationinaMedicalClinicDlg::InitializeDatabase(sqlite3*& db)
@@ -259,6 +252,7 @@ BOOL CMFCAppRegistrationinaMedicalClinicDlg::InitializeDatabase(sqlite3*& db)
 		const char* sqlCreateTableVisits = "CREATE TABLE IF NOT EXISTS Visits ("
 			"ID INTEGER PRIMARY KEY AUTOINCREMENT,"
 			"visit_date TEXT NOT NULL,"
+			"visit_time TEXT NOT NULL,"
 			"doctor_id INTEGER NOT NULL,"
 			"patient_id INTEGER NOT NULL,"
 			"comment TEXT,"
@@ -274,11 +268,11 @@ BOOL CMFCAppRegistrationinaMedicalClinicDlg::InitializeDatabase(sqlite3*& db)
 			return false;
 		}
 
-		const char* insertSQLVisits = "INSERT INTO Visits (visit_date, doctor_id, patient_id, comment) VALUES "
-			"('06-04-2024', 1, 1, 'Routine check-up'),"
-			"('05-04-2024', 2, 4, 'Follow-up visit'),"
-			"('04-04-2024', 4, 2, 'Routine check-up'),"
-			"('03-04-2024', 3, 3, 'Emergency visit');";
+		const char* insertSQLVisits = "INSERT INTO Visits (visit_date, visit_time, doctor_id, patient_id, comment) VALUES "
+			"('06-04-2024', '14:20', 1, 1, 'Routine check-up'),"
+			"('05-04-2024', '10:00', 2, 4, 'Follow-up visit'),"
+			"('04-04-2024', '15:15', 4, 2, 'Routine check-up'),"
+			"('03-04-2024', '16:45', 3, 3, 'Emergency visit');";
 
 		rc = sqlite3_exec(db, insertSQLVisits, nullptr, nullptr, &errMsg);
 		if (rc != SQLITE_OK)
@@ -288,39 +282,39 @@ BOOL CMFCAppRegistrationinaMedicalClinicDlg::InitializeDatabase(sqlite3*& db)
 			return false;
 		}
 	}
-	return true;
+	return TRUE;
 }
 
 void CMFCAppRegistrationinaMedicalClinicDlg::createrVisitsTableHeader()
 {
-	m_listCtrl.InsertColumn(0, _T("ID"), LVCFMT_LEFT, 50);
-	m_listCtrl.InsertColumn(1, _T("visit_date"), LVCFMT_LEFT, 100);
-	m_listCtrl.InsertColumn(2, _T("Doctor"), LVCFMT_LEFT, 100);
-	m_listCtrl.InsertColumn(3, _T("Patient"), LVCFMT_LEFT, 100);
-	m_listCtrl.InsertColumn(4, _T("Comment"), LVCFMT_LEFT, 150);
+	m_listCtrl.InsertColumn(0, _T("ID"), LVCFMT_LEFT, 30);
+	m_listCtrl.InsertColumn(1, _T("Date"), LVCFMT_LEFT, 80);
+	m_listCtrl.InsertColumn(2, _T("Time"), LVCFMT_LEFT, 50);	
+	m_listCtrl.InsertColumn(3, _T("Doctor"), LVCFMT_LEFT, 100);
+	m_listCtrl.InsertColumn(4, _T("Patient"), LVCFMT_LEFT, 100);
+	m_listCtrl.InsertColumn(5, _T("Comment"), LVCFMT_LEFT, 300);
 }
 
 void CMFCAppRegistrationinaMedicalClinicDlg::createrDoctorsTableHeader()
 {
-	m_listCtrl.InsertColumn(0, _T("ID"), LVCFMT_LEFT, 50);
+	m_listCtrl.InsertColumn(0, _T("ID"), LVCFMT_LEFT, 30);
 	m_listCtrl.InsertColumn(1, _T("Name"), LVCFMT_LEFT, 100);
 	m_listCtrl.InsertColumn(2, _T("Position"), LVCFMT_LEFT, 100);
 	m_listCtrl.InsertColumn(3, _T("Specialization"), LVCFMT_LEFT, 100);
-	m_listCtrl.InsertColumn(4, _T("Gender"), LVCFMT_LEFT, 100);
-	m_listCtrl.InsertColumn(5, _T("Age"), LVCFMT_LEFT, 50);
-	m_listCtrl.InsertColumn(6, _T("Shedule"), LVCFMT_LEFT, 150);
+	m_listCtrl.InsertColumn(4, _T("Gender"), LVCFMT_LEFT, 50);
+	m_listCtrl.InsertColumn(5, _T("Age"), LVCFMT_LEFT, 40);
+	m_listCtrl.InsertColumn(6, _T("Shedule"), LVCFMT_LEFT, 250);
 }
 void CMFCAppRegistrationinaMedicalClinicDlg::createrPatientsTableHeader()
 {
-	m_listCtrl.InsertColumn(0, _T("ID"), LVCFMT_LEFT, 50);
+	m_listCtrl.InsertColumn(0, _T("ID"), LVCFMT_LEFT, 30);
 	m_listCtrl.InsertColumn(1, _T("Name"), LVCFMT_LEFT, 100);
-	m_listCtrl.InsertColumn(2, _T("Gender"), LVCFMT_LEFT, 100);
-	m_listCtrl.InsertColumn(4, _T("Age"), LVCFMT_LEFT, 50);
+	m_listCtrl.InsertColumn(2, _T("Gender"), LVCFMT_LEFT, 50);
+	m_listCtrl.InsertColumn(4, _T("Age"), LVCFMT_LEFT, 40);
 }
 
 void CMFCAppRegistrationinaMedicalClinicDlg::LoadDataFromDatabase(sqlite3* db, CListCtrl& listCtrl)
 {
-	
 	// Find the control
 	m_listCtrl.SubclassDlgItem(IDC_VISITS_LIST, this);
 
@@ -406,7 +400,6 @@ void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedButton1()
 
 void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedButton2()
 {
-	// TODO: Add your control notification handler code here
 	m_listCtrl.DeleteAllItems();	
 	ClearListCtrlColumns();
 
@@ -417,7 +410,6 @@ void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedButton2()
 
 void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedButton3()
 {
-	// TODO: Add your control notification handler code here
 	m_listCtrl.DeleteAllItems();
 	ClearListCtrlColumns();
 
@@ -427,7 +419,6 @@ void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedButton3()
 
 void CMFCAppRegistrationinaMedicalClinicDlg::fillVisitsList()
 {
-
 	m_currentView = ViewType::Visits;
 
 	m_listCtrl.DeleteAllItems();
@@ -444,10 +435,10 @@ void CMFCAppRegistrationinaMedicalClinicDlg::fillVisitsList()
 	}
 
 	// Query to retrieve visits with doctor and patient names
-	const char* query = "SELECT Visits.id, Visits.visit_date, Doctors.name AS doctor_name, patients.name AS patient_name, visits.comment "
+	const char* query = "SELECT Visits.id, Visits.visit_date, Visits.visit_time, Doctors.name AS doctor_name, patients.name AS patient_name, visits.comment "
 		"FROM Visits "
-		"JOIN Doctors ON Visits.doctor_id = doctors.id "
-		"JOIN Patients ON Visits.patient_id = patients.id;";
+		"JOIN Doctors ON Visits.doctor_id = Doctors.id "
+		"JOIN Patients ON Visits.patient_id = Patients.id;";
 
 	sqlite3_stmt* stmt;
 	if (sqlite3_prepare_v2(db, query, -1, &stmt, nullptr) == SQLITE_OK)
@@ -457,17 +448,25 @@ void CMFCAppRegistrationinaMedicalClinicDlg::fillVisitsList()
 		{
 			int id = sqlite3_column_int(stmt, 0);
 			const char* visit_date = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-			const char* doctor_name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-			const char* patient_name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
-			const char* comment = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+			const char* visit_time = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+			const char* doctor_name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+			const char* patient_name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+			const char* comment = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5));
 
 			m_listCtrl.InsertItem(row, std::to_wstring(id).c_str());
 			m_listCtrl.SetItemText(row, 1, CA2T(visit_date));
-			m_listCtrl.SetItemText(row, 2, CA2T(doctor_name));
-			m_listCtrl.SetItemText(row, 3, CA2T(patient_name));
-			m_listCtrl.SetItemText(row, 4, CA2T(comment));
+			m_listCtrl.SetItemText(row, 2, CA2T(visit_time));
+			m_listCtrl.SetItemText(row, 3, CA2T(doctor_name));
+			m_listCtrl.SetItemText(row, 4, CA2T(patient_name));
+			m_listCtrl.SetItemText(row, 5, CA2T(comment));
 			row++;
 		}
+
+		// Adjust column width to fit the content
+		m_listCtrl.SetColumnWidth(3, LVSCW_AUTOSIZE_USEHEADER);
+		m_listCtrl.SetColumnWidth(4, LVSCW_AUTOSIZE_USEHEADER);
+		m_listCtrl.SetColumnWidth(5, LVSCW_AUTOSIZE_USEHEADER);
+		
 		sqlite3_finalize(stmt);
 	}
 }
@@ -512,6 +511,11 @@ void CMFCAppRegistrationinaMedicalClinicDlg::fillPatientsList()
 		m_listCtrl.SetItemText(row, 3, CString(age));
 		row++;
 	}
+
+	// Adjust column width to fit the content
+	m_listCtrl.SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
+	m_listCtrl.SetColumnWidth(2, LVSCW_AUTOSIZE_USEHEADER);
+	m_listCtrl.SetColumnWidth(3, LVSCW_AUTOSIZE_USEHEADER);
 
 	// Free resources and close the database connection
 	sqlite3_finalize(stmt);
@@ -559,8 +563,18 @@ void CMFCAppRegistrationinaMedicalClinicDlg::fillDoctorsList()
 		m_listCtrl.SetItemText(row, 4, CString(gender));
 		m_listCtrl.SetItemText(row, 5, CString(age));
 		m_listCtrl.SetItemText(row, 6, CString(shedule));
+
 		row++;
 	}
+
+	// Adjust column width to fit the content
+	m_listCtrl.SetColumnWidth(1, LVSCW_AUTOSIZE_USEHEADER);
+	m_listCtrl.SetColumnWidth(2, LVSCW_AUTOSIZE_USEHEADER);
+	m_listCtrl.SetColumnWidth(3, LVSCW_AUTOSIZE_USEHEADER);
+	m_listCtrl.SetColumnWidth(4, LVSCW_AUTOSIZE_USEHEADER);
+	m_listCtrl.SetColumnWidth(5, LVSCW_AUTOSIZE_USEHEADER);
+	m_listCtrl.SetColumnWidth(6, LVSCW_AUTOSIZE_USEHEADER);
+
 
 	sqlite3_finalize(stmt);
 	sqlite3_close(db);
@@ -581,11 +595,11 @@ void CMFCAppRegistrationinaMedicalClinicDlg::ClearListCtrlColumns()
 }
 
 
-void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedCancel()
+/*void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedCancel()
 {
 	// TODO: Add your control notification handler code here
 	CDialogEx::OnCancel();
-}
+}*/
 
 
 void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedOk()
@@ -594,9 +608,29 @@ void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedOk()
 	CDialogEx::OnOK();
 }
 
+void CMFCAppRegistrationinaMedicalClinicDlg::OpenAddVisitDialog()
+{
+	CMyDialog myDialog;
+	myDialog.DoModal();
+	//CAddVisitDlg dlg; // TODO - this is bed file - remove it
+}
+
+void CMFCAppRegistrationinaMedicalClinicDlg::OpenAddDoctorDialog()
+{
+	CAddDoctorDlg add_doctor_dialog;
+	add_doctor_dialog.DoModal();
+
+}
+
+void CMFCAppRegistrationinaMedicalClinicDlg::OpenAddPatientDialog()
+{
+	CAddPatientDlg add_patient_dialog;
+	add_patient_dialog.DoModal();
+}
 
 void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedButton4()
 {
+	//EndDialog(IDOK);
 	switch (m_currentView)
 	{
 	case ViewType::Visits:
@@ -612,16 +646,4 @@ void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedButton4()
 		AfxMessageBox(_T("Unknown view type"));
 		break;
 	}
-}
-
-void CMFCAppRegistrationinaMedicalClinicDlg::OpenAddVisitDialog()
-{
-}
-
-void CMFCAppRegistrationinaMedicalClinicDlg::OpenAddDoctorDialog()
-{
-}
-
-void CMFCAppRegistrationinaMedicalClinicDlg::OpenAddPatientDialog()
-{
 }
