@@ -221,13 +221,12 @@ void CMyDialog::OnBnClickedOk()
         return;
     }
 
-    // Format date and time separately
-    strOnlyDate = date.Format(_T("%Y-%m-%d"));
-    strTime = time.Format(_T("%H:%M"));
+    mDateTimeCtrl_Time.GetTime(time); // set time from "mDateTimeCtrl_Time" to "time"
+    mDateTimeCtrl_Date.GetTime(date); // set date from "mDateTimeCtrl_Date" to "date"
 
-    //CString strDateTime;
-    //strDateTime.Format(_T("%s %s"), strOnlyDate, strTime);
-    //AfxMessageBox(_T("Time and date: " + strDateTime));
+    // Format date and time separately
+    strOnlyDate = date.Format(_T("%m-%d-%Y"));
+    strTime = time.Format(_T("%H:%M"));
 
     CString strComment;
     mEdit_comment.GetWindowText(strComment);
@@ -239,7 +238,7 @@ void CMyDialog::OnBnClickedOk()
         return;
     }
 
-    // TODO: do we need this ?
+    // TODO: check in future: do we need these two line below ?
     // Get selected doctor and patient names
     CString strDoctor, strPatient;
     m_ComboBox_add_doctor.GetLBText(m_ComboBox_add_doctor.GetCurSel(), strDoctor);
