@@ -1,12 +1,14 @@
 #pragma once
 #include "afxdialogex.h"
 
+#include "MFC_App_Registration_in_a_Medical_ClinicDlg.h"
+
 class CAddDoctorDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CAddDoctorDlg)
 
 public:
-	CAddDoctorDlg(CWnd* pParent = nullptr);
+	CAddDoctorDlg(CMFCAppRegistrationinaMedicalClinicDlg* pParentDlg, CWnd* pParent = nullptr);
 	virtual ~CAddDoctorDlg();
 
 // Dialog Data
@@ -25,6 +27,8 @@ private:
 	CComboBox mComboBox_gender;
 	CEdit mEdit_age;
 	CEdit mEdit_schedule;
+
+	CMFCAppRegistrationinaMedicalClinicDlg* m_pParentDlg;
 
 	DECLARE_MESSAGE_MAP()
 public:

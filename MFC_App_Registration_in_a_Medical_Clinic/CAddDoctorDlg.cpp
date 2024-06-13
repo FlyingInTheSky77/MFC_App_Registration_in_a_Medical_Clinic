@@ -1,20 +1,16 @@
-// CAddDoctorDlg.cpp : implementation file
-//
-
 #include "pch.h"
-#include "MFC_App_Registration_in_a_Medical_Clinic.h"
 #include "afxdialogex.h"
-#include "CAddDoctorDlg.h"
 
 #include "sqlite3.h"
 
-
-// CAddDoctorDlg dialog
+#include "CAddDoctorDlg.h"
+#include "MFC_App_Registration_in_a_Medical_Clinic.h"
 
 IMPLEMENT_DYNAMIC(CAddDoctorDlg, CDialogEx)
 
-CAddDoctorDlg::CAddDoctorDlg(CWnd* pParent /*=nullptr*/)
+CAddDoctorDlg::CAddDoctorDlg(CMFCAppRegistrationinaMedicalClinicDlg* pParentDlg, CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_ADD_DOCTOR, pParent)
+	, m_pParentDlg(pParentDlg)
 {
 }
 
@@ -36,9 +32,6 @@ void CAddDoctorDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CAddDoctorDlg, CDialogEx)
 	ON_BN_CLICKED(ID_SAVE, &CAddDoctorDlg::OnBnClickedOk)	
 END_MESSAGE_MAP()
-
-
-// CAddDoctorDlg message handlers
 
 BOOL CAddDoctorDlg::OnInitDialog()
 {
@@ -106,7 +99,6 @@ void CAddDoctorDlg::OnBnClickedOk()
 	CString strSchedule;
 	mEdit_schedule.GetWindowText(strSchedule);
 
-	// Check if specialization isn't selected
 	if (strSchedule.IsEmpty())
 	{
 		AfxMessageBox(_T("Enter schedule"));
@@ -141,6 +133,12 @@ void CAddDoctorDlg::OnBnClickedOk()
 
 	// Close the SQLite database
 	sqlite3_close(db);
+
+	// Call to update the doctors list
+	if (m_pParentDlg)
+	{
+		m_pParentDlg->UpdateDoctorList();
+	}
 
 	CDialogEx::OnOK();
 }

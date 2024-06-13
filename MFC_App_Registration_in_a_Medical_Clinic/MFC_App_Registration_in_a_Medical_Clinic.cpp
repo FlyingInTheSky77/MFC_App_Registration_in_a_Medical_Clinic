@@ -4,6 +4,7 @@
 
 #include "pch.h"
 #include "framework.h"
+
 #include "MFC_App_Registration_in_a_Medical_Clinic.h"
 #include "MFC_App_Registration_in_a_Medical_ClinicDlg.h"
 

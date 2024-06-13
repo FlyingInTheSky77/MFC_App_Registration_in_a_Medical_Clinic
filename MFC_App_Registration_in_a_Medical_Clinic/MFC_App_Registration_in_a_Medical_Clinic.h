@@ -10,11 +10,6 @@
 
 #include "resource.h"		// main symbols
 
-
-// CMFCAppRegistrationinaMedicalClinicApp:
-// See MFC_App_Registration_in_a_Medical_Clinic.cpp for the implementation of this class
-//
-
 class CMFCAppRegistrationinaMedicalClinicApp : public CWinApp
 {
 public:
