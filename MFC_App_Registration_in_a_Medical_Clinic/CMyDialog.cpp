@@ -1,19 +1,17 @@
-﻿// CMyDialog.cpp : implementation file
-//
-
-#include "pch.h"
-#include "MFC_App_Registration_in_a_Medical_Clinic.h"
+﻿#include "pch.h"
 #include "afxdialogex.h"
-#include "CMyDialog.h"
 
 #include "sqlite3.h"
 
-// CMyDialog dialog
+#include "CMyDialog.h"
+#include "MFC_App_Registration_in_a_Medical_Clinic.h"
+
 
 IMPLEMENT_DYNAMIC(CMyDialog, CDialogEx)
 
-CMyDialog::CMyDialog(CWnd* pParent /*=nullptr*/)
+CMyDialog::CMyDialog(CMFCAppRegistrationinaMedicalClinicDlg* pParentDlg, CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MYDIALOG, pParent)
+    , m_pParentDlg(pParentDlg)
 {
 }
 
@@ -48,7 +46,6 @@ BOOL CMyDialog::OnInitDialog()
     mEdit_doctors_schedule.SetReadOnly(TRUE);    
 
     // Set the time control format to exclude seconds
-    //mDateTimeCtrl_Date.SetFormat(_T("yyyy-MM-dd"));
     mDateTimeCtrl_Time.SetFormat(_T("HH:mm"));
 
     // Set the initial date and time
@@ -145,7 +142,6 @@ void CMyDialog::LoadDoctorDetailsFromDB(const CString& doctorName)
     sqlite3* db;
     sqlite3_stmt* stmt;
 
-    // Open the database
     int rc = sqlite3_open("../../example.db", &db);
     if (rc)
     {
@@ -153,7 +149,6 @@ void CMyDialog::LoadDoctorDetailsFromDB(const CString& doctorName)
         return;
     }
 
-    // Prepare the SQL query to select doctor details
     CStringA doctorNameA(doctorName); // Convert CString to CStringA
     CStringA sqlA;
     sqlA.Format("SELECT shedule FROM Doctors WHERE name = '%s';", doctorNameA);
@@ -166,7 +161,6 @@ void CMyDialog::LoadDoctorDetailsFromDB(const CString& doctorName)
         return;
     }
 
-    // Execute the query and get the details
     CString doctor_schedule;
     if (sqlite3_step(stmt) == SQLITE_ROW)
     {
@@ -174,28 +168,26 @@ void CMyDialog::LoadDoctorDetailsFromDB(const CString& doctorName)
         doctor_schedule = CString(schedule);
     }
 
-    // Finalize the statement and close the database
     sqlite3_finalize(stmt);
     sqlite3_close(db);
 
-    // Display the details in the Edit control
    mEdit_doctors_schedule.SetWindowText(doctor_schedule);
 }
 
 
 void CMyDialog::OnBnClickedOk()
 {
-    // Check if a doctor is selected
+    // Check if the doctor is selected
     if (m_ComboBox_add_doctor.GetCurSel() == CB_ERR)
     {
-        AfxMessageBox(_T("Select a doctor or press Cancel"));
+        AfxMessageBox(_T("Select a doctor"));
         return;
     }
 
-    // Check if a patient is selected
+    // Check if the patient is selected
     if (m_ComboBox_add_patient.GetCurSel() == CB_ERR)
     {
-        AfxMessageBox(_T("Select a patient or press Cancel"));
+        AfxMessageBox(_T("Select a patient"));
         return;
     }
    
@@ -231,20 +223,6 @@ void CMyDialog::OnBnClickedOk()
     CString strComment;
     mEdit_comment.GetWindowText(strComment);
 
-    // Check if a doctor is selected
-    if (m_ComboBox_add_doctor.GetCurSel() == CB_ERR)
-    {
-        AfxMessageBox(_T("Select a doctor or press Cancel"));
-        return;
-    }
-
-    // TODO: check in future: do we need these two line below ?
-    // Get selected doctor and patient names
-    CString strDoctor, strPatient;
-    m_ComboBox_add_doctor.GetLBText(m_ComboBox_add_doctor.GetCurSel(), strDoctor);
-    m_ComboBox_add_patient.GetLBText(m_ComboBox_add_patient.GetCurSel(), strPatient);
-
-    // Open the SQLite database
     sqlite3* db;
     int rc = sqlite3_open("../../example.db", &db);
     if (rc)
@@ -259,14 +237,12 @@ void CMyDialog::OnBnClickedOk()
 
     // Get the associated data (doctor ID)
     int doctor_id = m_ComboBox_add_doctor.GetItemData(doctor_combo_index);
-    int patient_id = m_ComboBox_add_patient.GetItemData(doctor_combo_index);
+    int patient_id = m_ComboBox_add_patient.GetItemData(patient_combo_index);
 
-    // Prepare SQL insert statement
     CString sql;
     sql.Format(_T("INSERT INTO Visits (visit_date, visit_time, doctor_id, patient_id, comment) VALUES ('%s', '%s', '%d', '%d', '%s');"),
         strOnlyDate, strTime, doctor_id, patient_id, strComment);
 
-    // Execute SQL insert statement
     char* errMsg = nullptr;
     rc = sqlite3_exec(db, CT2A(sql), nullptr, nullptr, &errMsg);
     if (rc != SQLITE_OK)
@@ -278,8 +254,12 @@ void CMyDialog::OnBnClickedOk()
         return;
     }
 
-    // Close the SQLite database
     sqlite3_close(db);
+
+    if (m_pParentDlg)
+    {
+        m_pParentDlg->UpdateVisitsList();
+    }
     
     CDialogEx::OnOK();
 }

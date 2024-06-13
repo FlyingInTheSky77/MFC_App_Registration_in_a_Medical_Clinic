@@ -1,12 +1,14 @@
 #pragma once
 #include "afxdialogex.h"
 
+#include "MFC_App_Registration_in_a_Medical_ClinicDlg.h"
+
 class CMyDialog : public CDialogEx
 {
 	DECLARE_DYNAMIC(CMyDialog)
 
 public:
-	CMyDialog(CWnd* pParent = nullptr);
+	CMyDialog(CMFCAppRegistrationinaMedicalClinicDlg* pParentDlg, CWnd* pParent = nullptr);
 	virtual ~CMyDialog();
 
 // Dialog Data
@@ -32,6 +34,8 @@ private:
 	void LoadDoctorDetailsFromDB(const CString& doctorName);
 
 	DECLARE_MESSAGE_MAP()
+
+	CMFCAppRegistrationinaMedicalClinicDlg* m_pParentDlg;
 
 public:	
 	afx_msg void OnBnClickedOk();

@@ -3,21 +3,20 @@
 //
 
 #include "pch.h"
-#include "framework.h"
-#include "MFC_App_Registration_in_a_Medical_Clinic.h"
-#include "MFC_App_Registration_in_a_Medical_ClinicDlg.h"
 #include "afxdialogex.h"
+#include "framework.h"
 
 #include <string>
 
-#include "CAddDoctorDlg.h"
 #include "CMyDialog.h"
+#include "CAddDoctorDlg.h"
 #include "CAddPatientDlg.h"
+#include "MFC_App_Registration_in_a_Medical_Clinic.h"
+#include "MFC_App_Registration_in_a_Medical_ClinicDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
 
 // CAboutDlg dialog used for App About
 
@@ -389,32 +388,18 @@ void CMFCAppRegistrationinaMedicalClinicDlg::OnLvnItemchangedList1(NMHDR* pNMHDR
 
 void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedButton1()
 {
-	// TODO: Add your control notification handler code here
-	m_listCtrl.DeleteAllItems();
-	ClearListCtrlColumns();
-	
-	createrVisitsTableHeader();
-	fillVisitsList();	
+	UpdateVisitsList();	
 }
 
 
 void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedButton2()
 {
-	m_listCtrl.DeleteAllItems();	
-	ClearListCtrlColumns();
-
-	createrPatientsTableHeader();
-	fillPatientsList();
-	
+	UpdatePatientList();	
 }
 
 void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedButton3()
 {
-	m_listCtrl.DeleteAllItems();
-	ClearListCtrlColumns();
-
-	createrDoctorsTableHeader();
-	fillDoctorsList();
+	UpdateDoctorList();
 }
 
 void CMFCAppRegistrationinaMedicalClinicDlg::fillVisitsList()
@@ -594,37 +579,27 @@ void CMFCAppRegistrationinaMedicalClinicDlg::ClearListCtrlColumns()
 	}
 }
 
-
-/*void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedCancel()
-{
-	// TODO: Add your control notification handler code here
-	CDialogEx::OnCancel();
-}*/
-
-
 void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedOk()
 {
-	// TODO: Add your control notification handler code here
 	CDialogEx::OnOK();
 }
 
 void CMFCAppRegistrationinaMedicalClinicDlg::OpenAddVisitDialog()
 {
-	CMyDialog myDialog;
+	CMyDialog myDialog(this);
 	myDialog.DoModal();
-	//CAddVisitDlg dlg; // TODO - this is bed file - remove it
 }
 
 void CMFCAppRegistrationinaMedicalClinicDlg::OpenAddDoctorDialog()
 {
-	CAddDoctorDlg add_doctor_dialog;
+	CAddDoctorDlg add_doctor_dialog(this);
 	add_doctor_dialog.DoModal();
 
 }
 
 void CMFCAppRegistrationinaMedicalClinicDlg::OpenAddPatientDialog()
 {
-	CAddPatientDlg add_patient_dialog;
+	CAddPatientDlg add_patient_dialog(this);
 	add_patient_dialog.DoModal();
 }
 
@@ -646,4 +621,31 @@ void CMFCAppRegistrationinaMedicalClinicDlg::OnBnClickedButton4()
 		AfxMessageBox(_T("Unknown view type"));
 		break;
 	}
+}
+
+void CMFCAppRegistrationinaMedicalClinicDlg::UpdateDoctorList()
+{
+	m_listCtrl.DeleteAllItems();
+	ClearListCtrlColumns();
+
+	createrDoctorsTableHeader();
+	fillDoctorsList();
+}
+
+void CMFCAppRegistrationinaMedicalClinicDlg::UpdatePatientList()
+{
+	m_listCtrl.DeleteAllItems();
+	ClearListCtrlColumns();
+
+	createrPatientsTableHeader();
+	fillPatientsList();
+}
+
+void CMFCAppRegistrationinaMedicalClinicDlg::UpdateVisitsList()
+{
+	m_listCtrl.DeleteAllItems();
+	ClearListCtrlColumns();
+
+	createrVisitsTableHeader();
+	fillVisitsList();
 }

@@ -1,7 +1,7 @@
-
 #pragma once
 
 #include "sqlite3.h"
+
 #pragma comment(lib, "sqlite3.lib")
 
 // CMFCAppRegistrationinaMedicalClinicDlg dialog
@@ -19,12 +19,10 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
-
 // Implementation
 protected:
 	HICON m_hIcon;
 
-	// Generated message map functions
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
@@ -37,20 +35,24 @@ public:
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedButton3();
+
+	void UpdateDoctorList();
+	void UpdatePatientList();
+	void UpdateVisitsList();
 	
 private:
 	BOOL InitializeDatabase(sqlite3*& db);
 	void LoadDataFromDatabase(sqlite3* db, CListCtrl& listCtrl);
-
-	void fillVisitsList();
-	void fillDoctorsList();
-	void fillPatientsList();
 
 	void ClearListCtrlColumns();
 
 	void createrVisitsTableHeader();
 	void createrDoctorsTableHeader();
 	void createrPatientsTableHeader();
+
+	void fillVisitsList();
+	void fillDoctorsList();
+	void fillPatientsList();
 
 	CListCtrl m_listCtrl;
 

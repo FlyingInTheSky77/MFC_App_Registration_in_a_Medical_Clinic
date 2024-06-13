@@ -1,19 +1,16 @@
-// CAddPatientDlg.cpp : implementation file
-//
-
 #include "pch.h"
-#include "MFC_App_Registration_in_a_Medical_Clinic.h"
 #include "afxdialogex.h"
-#include "CAddPatientDlg.h"
 
 #include "sqlite3.h"
 
-// CAddPatientDlg dialog
+#include "CAddPatientDlg.h"
+#include "MFC_App_Registration_in_a_Medical_Clinic.h"
 
 IMPLEMENT_DYNAMIC(CAddPatientDlg, CDialogEx)
 
-CAddPatientDlg::CAddPatientDlg(CWnd* pParent /*=nullptr*/)
+CAddPatientDlg::CAddPatientDlg(CMFCAppRegistrationinaMedicalClinicDlg* pParentDlg, CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_ADD_PATIENT, pParent)
+	, m_pParentDlg(pParentDlg)
 {
 }
 
@@ -49,16 +46,16 @@ void CAddPatientDlg::OnBnClickedSave()
 	CString strName;
 	mEdit_name.GetWindowText(strName); // Get the text from the CEdit control
 
-	// Check if name isn't selected
+	// Check if the name isn't selected
 	if (strName.IsEmpty())
 	{
 		AfxMessageBox(_T("Enter name"));
-		return; // Exit the function to prevent further processing
+		return;
 	}
 
 	const int choosen_gender = mComboBox_gender.GetCurSel();
 
-	// Check if a gender isn't selected
+	// Check if gender isn't selected
 	if (choosen_gender == CB_ERR)
 	{
 		AfxMessageBox(_T("Select gender"));
@@ -106,6 +103,12 @@ void CAddPatientDlg::OnBnClickedSave()
 
 	// Close the SQLite database
 	sqlite3_close(db);
+
+	// Call to update the patients list
+	if (m_pParentDlg)
+	{
+		m_pParentDlg->UpdatePatientList();
+	}
 
 	CDialogEx::OnOK();
 }
